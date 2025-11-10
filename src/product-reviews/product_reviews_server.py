@@ -149,10 +149,13 @@ def get_ai_assistant_response(request_product_id, question):
 
         # Choose implementation
         if USE_LANGCHAIN_AGENT:
+            # For LangChain: if LLM_BASE_URL doesn't contain ${}, use it directly
+            # Otherwise fall back to llm_mock_url
+            langchain_url = llm_base_url if not '${' in llm_base_url else llm_mock_url
             result = langchain_agent.get_ai_assistant_response_langchain(
                 product_id=request_product_id,
                 question=question,
-                base_url=llm_base_url,
+                base_url=langchain_url,
                 api_key=llm_api_key,
                 model=llm_model,
                 tracer=tracer,
