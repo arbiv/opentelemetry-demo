@@ -546,6 +546,7 @@ services:
       - FLAGD_PORT
       - LLM_HOST
       - LLM_PORT
+      - USE_LANGCHAIN_AGENT=true
     depends_on:
       product-catalog:
         condition: service_started
