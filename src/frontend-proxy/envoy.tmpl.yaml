@@ -51,6 +51,10 @@ static_resources:
                           redirect: { path_redirect: "/grafana/" }
                         - match: { prefix: "/grafana/" }
                           route: { cluster: grafana }
+                        - match: { path: "/langfuse" }
+                          redirect: { path_redirect: "/langfuse/" }
+                        - match: { prefix: "/langfuse/" }
+                          route: { cluster: langfuse, prefix_rewrite: "/" }
                         - match: { prefix: "/images/" }
                           route: { cluster: image-provider, prefix_rewrite: "/" }
                         - match: { prefix: "/flagservice/" }
@@ -242,6 +246,18 @@ static_resources:
                     socket_address:
                       address: ${JAEGER_HOST}
                       port_value: ${JAEGER_UI_PORT}
+    - name: langfuse
+      type: STRICT_DNS
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: langfuse
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: langfuse
+                      port_value: 3000
 admin:
   address:
     socket_address:

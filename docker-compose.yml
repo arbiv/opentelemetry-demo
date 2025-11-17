@@ -377,6 +377,8 @@ services:
         condition: service_started
       flagd-ui:
         condition: service_started
+      langfuse:
+        condition: service_started
     dns_search: ""
 
   # image-provider
@@ -547,6 +549,9 @@ services:
       - LLM_HOST
       - LLM_PORT
       - USE_LANGCHAIN_AGENT=true
+      - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
+      - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
+      - LANGFUSE_HOST=${LANGFUSE_HOST:-http://langfuse:3000}
     depends_on:
       product-catalog:
         condition: service_started
@@ -555,6 +560,8 @@ services:
       postgresql:
         condition: service_started
       otel-collector:
+        condition: service_started
+      langfuse:
         condition: service_started
     logging: *logging
 
@@ -773,6 +780,29 @@ services:
     depends_on:
       flagd:
         condition: service_started
+    logging: *logging
+
+  # Langfuse - LLM observability and monitoring
+  langfuse:
+    image: langfuse/langfuse:2
+    container_name: langfuse
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    restart: unless-stopped
+    depends_on:
+      postgresql:
+        condition: service_started
+    ports:
+      - "${LANGFUSE_PORT:-3000}:3000"
+    environment:
+      - NEXTAUTH_SECRET=${LANGFUSE_NEXTAUTH_SECRET:-secret-for-development-only-do-not-use-in-production}
+      - SALT=${LANGFUSE_SALT:-salt-for-development-only-do-not-use-in-production}
+      - DATABASE_URL=postgresql://root:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}
+      - NEXTAUTH_URL=${LANGFUSE_NEXTAUTH_URL:-http://localhost:3000}
+      - TELEMETRY_ENABLED=${LANGFUSE_TELEMETRY_ENABLED:-true}
+      - LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES=${LANGFUSE_ENABLE_EXPERIMENTAL_FEATURES:-false}
     logging: *logging
 
   # Postgresql used by Accounting service
