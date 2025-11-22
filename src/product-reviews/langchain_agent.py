@@ -48,7 +48,7 @@ def init_langchain_agent(pc_stub):
 
 @tool
 def fetch_product_reviews_tool(product_id: str) -> str:
-    """Executes a SQL query to retrieve reviews for a particular product.
+    """Retrieve reviews for a particular product.
 
     Args:
         product_id: The product ID to fetch product reviews for.
@@ -136,7 +136,6 @@ def create_agent_executor(
     tools = [fetch_product_reviews_tool, fetch_product_info_tool]
 
     # Create the agent using LangGraph
-    # Replaces the old AgentExecutor + create_tool_calling_agent
     agent_executor = create_react_agent(llm, tools)
 
     return agent_executor
@@ -210,6 +209,8 @@ def get_ai_assistant_response_langchain(
                 "Langfuse tracing"
             )
 
+    # Keep top-level business span with custom attributes
+    # LangChain auto instrumentation will create child spans automatically
     with tracer.start_as_current_span(
         "langchain_get_ai_assistant_response"
     ) as span:
@@ -217,6 +218,7 @@ def get_ai_assistant_response_langchain(
         span.set_attribute("app.product.id", product_id)
         span.set_attribute("app.product.question", question)
         span.set_attribute("app.implementation", "langchain")
+        span.set_attribute("app.model", model)
 
         # Handle rate limit simulation
         if check_rate_limit:
@@ -240,6 +242,7 @@ def get_ai_assistant_response_langchain(
                     {"callbacks": [langfuse_handler]}
                     if langfuse_handler else {}
                 )
+                # Auto instrumentation will trace this invoke call
                 result = agent_executor.invoke(
                     {"messages": [
                         {"role": "user", "content": user_prompt}
@@ -298,7 +301,11 @@ def get_ai_assistant_response_langchain(
             )
 
             # Invoke the agent with LangGraph message format
-            # Add Langfuse callback handler if available
+            # LangChain auto instrumentation will automatically trace:
+            # - Agent execution steps
+            # - LLM calls
+            # - Tool invocations
+            # - Chain operations
             config = (
                 {"callbacks": [langfuse_handler]}
                 if langfuse_handler else {}
@@ -324,6 +331,24 @@ def get_ai_assistant_response_langchain(
 
             return {"response": response_text}
 
+        except json.JSONDecodeError as e:
+            error_msg = (
+                f"JSON parsing error: {e}. This usually means the LLM API "
+                "returned an error response instead of valid JSON. "
+                "Check your API key and endpoint configuration."
+            )
+            logger.error(error_msg)
+            span.record_exception(e)
+            span.set_status(
+                Status(StatusCode.ERROR, description=error_msg)
+            )
+            return {
+                "error": error_msg,
+                "response": (
+                    "The system is unable to process your "
+                    "response. Please try again later."
+                )
+            }
         except Exception as e:
             logger.error(f"Error invoking LangChain agent: {e}")
             span.record_exception(e)

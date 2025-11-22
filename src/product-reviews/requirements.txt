@@ -16,3 +16,4 @@ langchain-openai==0.3.0
 langchain-community==0.3.12
 langgraph==0.2.62
 langfuse==2.59.1
+opentelemetry-instrumentation-langchain
