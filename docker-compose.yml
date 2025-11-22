@@ -526,7 +526,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 100M
+          memory: 1G
     restart: unless-stopped
     ports:
       - "${PRODUCT_REVIEWS_PORT}"
