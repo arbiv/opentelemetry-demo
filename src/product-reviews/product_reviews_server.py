@@ -158,7 +158,6 @@ def get_ai_assistant_response(request_product_id, question):
                 base_url=langchain_url,
                 api_key=llm_api_key,
                 model=llm_model,
-                tracer=tracer,
                 check_rate_limit=check_rate_limit,
                 check_inaccurate=llm_inaccurate_response,
                 mock_url=llm_mock_url
@@ -249,7 +248,7 @@ if __name__ == "__main__":
 
     # Initialize both implementations with dependencies
     openai_assistant.init_openai_assistant(product_catalog_stub)
-    langchain_agent.init_langchain_agent(product_catalog_stub)
+    langchain_agent.init_langchain_agent(product_catalog_stub, tracer)
 
     logger.info(f"AI Assistant Implementation: {'LangChain Agent' if USE_LANGCHAIN_AGENT else 'OpenAI SDK'}")
 

@@ -552,6 +552,8 @@ services:
       - LANGFUSE_SECRET_KEY=${LANGFUSE_SECRET_KEY:-}
       - LANGFUSE_PUBLIC_KEY=${LANGFUSE_PUBLIC_KEY:-}
       - LANGFUSE_HOST=${LANGFUSE_HOST:-http://langfuse:3000}
+      - ENABLE_LLM_JUDGE_SCORING=${ENABLE_LLM_JUDGE_SCORING:-false}
+      - LLM_JUDGE_MODEL=${LLM_JUDGE_MODEL:-}
     depends_on:
       product-catalog:
         condition: service_started
