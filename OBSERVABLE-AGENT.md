@@ -1,6 +1,8 @@
 # Observable Agent Tutorial
 
-This tutorial will guide you through setting up and using the Observable AI Agent Tutorial, based on the OpenTelemetry Demo, including tracing in Jaeger, Langfuse integration, and LLM judge scoring.
+This tutorial will guide you through setting up and using the Observable AI
+Agent Tutorial, based on the OpenTelemetry Demo, including tracing in Jaeger,
+Langfuse integration, and LLM judge scoring.
 
 ⭐ **Start this repo to show your love for observable AI agents!**
 
@@ -21,6 +23,7 @@ make start
 ```
 
 This will start all services including:
+
 - The Astronomy Shop frontend
 - All microservices
 - Jaeger for distributed tracing
@@ -54,6 +57,7 @@ Once the services are running (this may take a few minutes), access:
 ### 1.4 Generate Some Traffic
 
 To see more traces, interact with the webstore:
+
 - Browse products
 - View product details
 
@@ -65,7 +69,8 @@ Each interaction will generate traces that you can view in Jaeger.
 
 ### 2.1 Configure OpenAI API Keys
 
-To use the "Ask AI" feature with a real LLM (instead of the mock LLM), you need to configure OpenAI API keys.
+To use the "Ask AI" feature with a real LLM (instead of the mock LLM), you
+need to configure OpenAI API keys.
 
 **Need an OpenAI API key?** Learn how to create one in the [OpenAI API Keys documentation](https://platform.openai.com/api-keys).
 
@@ -82,7 +87,8 @@ OPENAI_API_KEY=sk-your-openai-api-key-here
 
 ### 2.2 Restart the Product Reviews Service
 
-After adding the API keys, restart the product-reviews service to pick up the new configuration:
+After adding the API keys, restart the product-reviews service to pick up the
+new configuration:
 
 ```bash
 make restart service=product-reviews
@@ -169,42 +175,19 @@ make restart service=product-reviews
 
 1. Go back to the webstore and use the "Ask AI" feature again
 2. Open Langfuse UI at `http://localhost:3000`
-3. You should see the **Dashboard** view by default, which shows an overview of your project's LLM activity
+3. You should see the **Dashboard** view by default, which shows an overview
+   of your project's LLM activity
 
 ### 3.7 Explore the Langfuse Dashboard
 
-The Langfuse dashboard is the first thing you see when opening Langfuse and provides comprehensive analytics and insights into your LLM usage:
-
-1. **Key Metrics to Explore**:
-   - **Total Traces**: Number of LLM interactions tracked
-   - **Total Tokens**: Aggregate token usage (input + output)
-   - **Total Cost**: Estimated cost based on token usage and model pricing
-   - **Average Latency**: Mean response time for LLM calls
-   - **Traces Over Time**: Time-series graph showing activity patterns
-
-2. **Explore Different Views**:
-   - **Dashboard**: Overview of metrics and activity (current view)
-   - **Traces**: Detailed view of individual LLM interactions (see step 3.8)
-   - **Sessions**: Grouped traces by session ID (product ID in this demo)
-   - **Scores**: View all evaluation scores (including judge scores when enabled)
-   - **Analytics**: Advanced analytics and filtering options
-
-3. **Filter and Search**:
-   - Use filters to find specific traces by:
-     - Date range
-     - Model used
-     - Session ID
-     - Score ranges
-   - Search by metadata (product ID, questions, etc.)
-
-4. **Cost Tracking**:
-   - View cost breakdown by model
-   - Track token usage trends
-   - Identify expensive operations
+The Langfuse dashboard is the first thing you see when opening Langfuse and
+provides comprehensive analytics and insights into your LLM usage including
+cost, token usage, and latency.
 
 ### 3.8 Explore Traces in Langfuse
 
-Navigate to **Traces** in the Langfuse interface to see detailed information about individual LLM interactions:
+Navigate to **Traces** in the Langfuse interface to see detailed information
+about individual LLM interactions:
 
 1. Click on **Traces** in the navigation menu
 2. You should see traces appearing for each AI assistant interaction
@@ -221,7 +204,8 @@ Navigate to **Traces** in the Langfuse interface to see detailed information abo
 
 ### 3.9 Compare Jaeger and Langfuse Traces
 
-- **Jaeger**: Shows distributed tracing across all microservices, including HTTP requests, database calls, and service-to-service communication
+- **Jaeger**: Shows distributed tracing across all microservices, including HTTP
+  requests, database calls, and service-to-service communication
 - **Langfuse**: Focuses specifically on LLM interactions, showing detailed information about:
   - LLM calls and responses
   - Token usage and costs
@@ -234,7 +218,8 @@ Both tools complement each other for full observability.
 
 ## Step 4: Using LLM as a Judge
 
-The LLM judge feature evaluates the quality of AI assistant responses using another LLM to score them.
+The LLM judge feature evaluates the quality of AI assistant responses using
+another LLM to score them.
 
 ### 4.1 Enable LLM Judge Scoring
 
@@ -244,11 +229,13 @@ Add the following to your `.env.override` file:
 # Enable LLM judge scoring
 ENABLE_LLM_JUDGE_SCORING=true
 
-# Optional: Use a different model for judging (defaults to the same model as the assistant)
+# Optional: Use a different model for judging (defaults to the same model as
+# the assistant)
 LLM_JUDGE_MODEL=gpt-4o-mini
 ```
 
-**Note**: If `LLM_JUDGE_MODEL` is not set, it will use the same model as the AI assistant.
+**Note**: If `LLM_JUDGE_MODEL` is not set, it will use the same model as the AI
+assistant.
 
 ### 4.2 Restart the Product Reviews Service
 
@@ -298,7 +285,8 @@ The LLM judge evaluates responses on four criteria:
 3. **Completeness** (0-1): Does the response provide sufficient information?
 4. **Clarity** (0-1): Is the response clear and well-structured?
 
-The **overall_score** is a single value (0-1) representing the overall quality, and the judge provides reasoning for its evaluation.
+The **overall_score** is a single value (0-1) representing the overall quality,
+and the judge provides reasoning for its evaluation.
 
 ---
 
@@ -326,7 +314,8 @@ The **overall_score** is a single value (0-1) representing the overall quality, 
 ### Judge Scores Not Appearing
 
 - Verify `ENABLE_LLM_JUDGE_SCORING=true` is set
-- Check that Langfuse is properly configured (judge scores require Langfuse)
+- Check that Langfuse is properly configured (judge scores require
+  Langfuse)
 - View product-reviews logs: `docker compose logs product-reviews | grep -i judge`
 - Ensure the judge model is accessible (if using a different model than the assistant)
 
@@ -340,8 +329,10 @@ The **overall_score** is a single value (0-1) representing the overall quality, 
 
 ## Next Steps
 
-- Explore the [Langfuse Documentation](https://langfuse.com/docs) for advanced features
-- Check out [OpenTelemetry Documentation](https://opentelemetry.io/docs/) for more on distributed tracing
+- Explore the [Langfuse Documentation](https://langfuse.com/docs) for advanced
+  features
+- Check out [OpenTelemetry Documentation](https://opentelemetry.io/docs/) for
+  more on distributed tracing
 - Experiment with different LLM models and judge configurations
 - Set up alerts and monitoring in Langfuse for production use
 
@@ -352,9 +343,13 @@ The **overall_score** is a single value (0-1) representing the overall quality, 
 This tutorial covered:
 
 1. ✅ Running the demo and viewing distributed traces in Jaeger
-2. ✅ Configuring OpenAI API keys and using the "Ask AI" feature with trace visibility
-3. ✅ Setting up Langfuse for LLM-specific observability and viewing traces
+2. ✅ Configuring OpenAI API keys and using the "Ask AI" feature with trace
+   visibility
+3. ✅ Setting up Langfuse for LLM-specific observability and viewing
+   traces
 4. ✅ Enabling and using LLM judge scoring to evaluate response quality
 
-You now have a complete observability setup for your AI-powered application, with both distributed tracing (Jaeger) and LLM-specific monitoring (Langfuse) working together!
+You now have a complete observability setup for your AI-powered application,
+with both distributed tracing (Jaeger) and LLM-specific monitoring (Langfuse)
+working together!
 
