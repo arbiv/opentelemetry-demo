@@ -1,7 +1,7 @@
 # Observable Agent Tutorial
 
 This tutorial will guide you through setting up and using the Observable AI
-Agent Tutorial, based on the OpenTelemetry Demo, including tracing in Jaeger,
+Agent Tutorial, based on the OpenTelemetry Demo, including OpenTelemetry instrumentation,
 Langfuse integration, and LLM judge scoring.
 
 ⭐ **Start this repo to show your love for observable AI agents!**
@@ -69,8 +69,8 @@ Each interaction will generate traces that you can view in Jaeger.
 
 ### 2.1 Configure OpenAI API Keys
 
-To use the "Ask AI" feature with a real LLM (instead of the mock LLM), you
-need to configure OpenAI API keys.
+To run our AI agent, we need to configure a real LLM. 
+If you don't want or can't use a real LLM, you can use the original OpenTelemetry demo with a mock LLM.
 
 **Need an OpenAI API key?** Learn how to create one in the [OpenAI API Keys documentation](https://platform.openai.com/api-keys).
 
@@ -202,18 +202,6 @@ about individual LLM interactions:
   - `fetch_product_reviews_tool`
   - `fetch_product_info_tool`
 
-### 3.9 Compare Jaeger and Langfuse Traces
-
-- **Jaeger**: Shows distributed tracing across all microservices, including HTTP
-  requests, database calls, and service-to-service communication
-- **Langfuse**: Focuses specifically on LLM interactions, showing detailed information about:
-  - LLM calls and responses
-  - Token usage and costs
-  - Tool invocations within the agent
-  - Prompt and response content
-
-Both tools complement each other for full observability.
-
 ---
 
 ## Step 4: Using LLM as a Judge
@@ -233,9 +221,6 @@ ENABLE_LLM_JUDGE_SCORING=true
 # the assistant)
 LLM_JUDGE_MODEL=gpt-4o-mini
 ```
-
-**Note**: If `LLM_JUDGE_MODEL` is not set, it will use the same model as the AI
-assistant.
 
 ### 4.2 Restart the Product Reviews Service
 
@@ -303,21 +288,18 @@ and the judge provides reasoning for its evaluation.
 - Verify your API key is correct in `.env.override`
 - Check the product-reviews service logs: `docker compose logs product-reviews`
 - Ensure `LLM_BASE_URL` and `OPENAI_API_KEY` are set correctly
+- Ensure docker was started with the make command, so `.env.override` is used
 
 ### Langfuse Not Showing Traces
 
 - Verify API keys are set: `docker compose exec product-reviews env | grep LANGFUSE`
 - Check Langfuse service is running: `docker compose ps langfuse`
 - View product-reviews logs for errors: `docker compose logs product-reviews | grep -i langfuse`
-- Ensure you've created a project in Langfuse UI
 
 ### Judge Scores Not Appearing
 
 - Verify `ENABLE_LLM_JUDGE_SCORING=true` is set
-- Check that Langfuse is properly configured (judge scores require
-  Langfuse)
 - View product-reviews logs: `docker compose logs product-reviews | grep -i judge`
-- Ensure the judge model is accessible (if using a different model than the assistant)
 
 ### Jaeger Not Showing Traces
 
@@ -329,12 +311,9 @@ and the judge provides reasoning for its evaluation.
 
 ## Next Steps
 
-- Explore the [Langfuse Documentation](https://langfuse.com/docs) for advanced
-  features
-- Check out [OpenTelemetry Documentation](https://opentelemetry.io/docs/) for
-  more on distributed tracing
-- Experiment with different LLM models and judge configurations
-- Set up alerts and monitoring in Langfuse for production use
+- Create a new tool: Add item to cart
+- Extend the AI agent to allow a chat experience
+- When using the LLM as a Judge, there is an LLM call span with an invalid parent. Why? Can you fix it?
 
 ---
 
