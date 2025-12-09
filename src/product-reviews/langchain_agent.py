@@ -12,6 +12,7 @@ capabilities to answer product-related questions.
 import json
 import logging
 import os
+import uuid
 from typing import Dict, Any
 
 from langchain_openai import ChatOpenAI
@@ -182,6 +183,9 @@ def get_ai_assistant_response_langchain(
         Dict with 'response' key or 'error' if failed
     """
 
+    # Generate a unique session ID for this request
+    session_id = str(uuid.uuid4())
+
     # Initialize Langfuse callback handler and client if available
     langfuse_handler = None
     langfuse_client = None
@@ -199,7 +203,7 @@ def get_ai_assistant_response_langchain(
                     secret_key=langfuse_secret_key,
                     public_key=langfuse_public_key,
                     host=langfuse_host,
-                    session_id=product_id,
+                    session_id=session_id,
                     user_id="product-reviews-service",
                     metadata={
                         "product_id": product_id,
@@ -363,7 +367,7 @@ def get_ai_assistant_response_langchain(
                     # us to associate scores with the agent's execution
                     langfuse_trace = langfuse_client.trace(
                         name="ai_assistant_response",
-                        session_id=product_id,
+                        session_id=session_id,
                         user_id="product-reviews-service",
                         metadata={
                             "product_id": product_id,
