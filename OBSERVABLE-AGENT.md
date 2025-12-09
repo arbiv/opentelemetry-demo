@@ -16,6 +16,12 @@ Langfuse integration, and LLM judge scoring.
 
 ### 1.1 Start the Demo
 
+Add these lines to .env.override to disable auto load generation
+```
+# Disable load generator autostart
+LOCUST_AUTOSTART=false
+```
+
 From the root directory of the repository, start the demo:
 
 ```bash
