@@ -25,6 +25,7 @@ COPY ./src/product-reviews/demo_pb2.py demo_pb2.py
 COPY ./src/product-reviews/product_reviews_server.py product_reviews_server.py
 COPY ./src/product-reviews/database.py database.py
 COPY ./src/product-reviews/metrics.py metrics.py
+COPY ./src/product-reviews/judge.py judge.py
 COPY ./src/product-reviews/langchain_agent.py langchain_agent.py
 COPY ./src/product-reviews/openai_assistant.py openai_assistant.py
 
