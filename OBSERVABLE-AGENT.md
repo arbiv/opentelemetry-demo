@@ -70,7 +70,7 @@ Each interaction will generate traces that you can view in Jaeger.
 ### 2.1 Configure OpenAI API Keys
 
 To run our AI agent, we need to configure a real LLM. 
-If you don't want or can't use a real LLM, you can use the original OpenTelemetry demo with a mock LLM.
+If you don't want or can't use a OpenAI API, you can use the original OpenTelemetry demo with a mock LLM.
 
 **Need an OpenAI API key?** Learn how to create one in the [OpenAI API Keys documentation](https://platform.openai.com/api-keys).
 
